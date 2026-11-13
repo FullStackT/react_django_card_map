@@ -1,5 +1,6 @@
 import { use, useEffect, useState } from 'react'
 import './App.css'
+import Card from './Card'
 
 function App() {
   const [books, setBooks] = useState([]);
@@ -97,9 +98,13 @@ function App() {
     }
   }
 
+  // const haveBooks = books?.length > 0 ? (<h1>We have books</h1>) : (<h1>Oops! We have no books.</h1>)
+
   return (
     <>
       <h1>Book Website</h1>
+      {/* {haveBooks} */}
+      {books?.length > 0 ? (<h1>We have books</h1>) : (<h1>Oops! We have no books.</h1>)}
       <div>
         <input
           type="text" 
@@ -115,6 +120,7 @@ function App() {
         />
         <button onClick={addBook}>Add Book</button>
       </div>
+
       {books.map((book) => (
         <div>
           <p>Title: {book.title}</p>
@@ -130,6 +136,9 @@ function App() {
             onClick={() => deleteBook(book.id)}> Delete</button>
         </div>
       ))}
+      <div id="card-col" className="col-sm-6 text-center">
+        <Card className="card" title="Test title" subtitle="subtitle" body="This is the body of my book card." />
+      </div>
     </>
   )
 }

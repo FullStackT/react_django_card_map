@@ -17,6 +17,10 @@
   }
 }
 
+h1 {
+  color: #657383;
+}
+
 .hero {
   position: relative;
 
@@ -181,4 +185,19 @@
     right: 0;
     border-right-color: var(--border);
   }
+}
+
+#card-col {
+  padding: 5% 5%;
+  border: 5px;
+  border-width: 3px;
+  border-style:solid;
+  border-radius: 15px;
+  border-color: #D5D5D5;
+  /* width: 350px; */
+  margin: 10px;
+}
+
+.card {
+  max-width: 200px;
 }
