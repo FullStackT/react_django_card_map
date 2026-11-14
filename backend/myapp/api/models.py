@@ -1,6 +1,13 @@
 from django.db import models
 from django.core.validators import RegexValidator
 
+class Bill(models.Model):
+    company = models.CharField(max_length=50)
+    card = models.ForeignKey(to="Card", on_delete=models.SET_NULL, null=True)
+
+    def __str__(self):
+        return str(self.company)
+
 class Book(models.Model):
     title = models.CharField(max_length=50)
     release_year = models.IntegerField()
@@ -22,10 +29,3 @@ class Card(models.Model):
 
     def __str__(self):
         return f"{self.owner} (*{self.last_four})"
-
-class Bill(models.Model):
-    company = models.CharField(max_length=50)
-    card = models.ForeignKey(to=Card, on_delete=models.SET_NULL, null=True)
-
-    def __str__(self):
-        return str(self.company)
