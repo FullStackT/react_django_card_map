@@ -11,3 +11,5 @@ backend/myapp/db.sqlite3
 
 # Logs
 *.log
+
+*.pyc
