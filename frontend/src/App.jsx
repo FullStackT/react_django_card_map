@@ -1,6 +1,9 @@
-import { use, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import './App.css'
 import Card from './Card'
+import AddBillModal from './AddBillModal'
+import AddCardModal from './AddCardModal'
+import { API_URL } from './api'
 
 function App() {
   // const [books, setBooks] = useState([]);
@@ -99,14 +102,19 @@ function App() {
   // }
 
   const [cards, setCards] = useState([]);
+  const [bills, setBills] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [showAddBill, setShowAddBill] = useState(false);
+  const [showAddCard, setShowAddCard] = useState(false);
 
   useEffect(() => {
-    fetchCards();
+    Promise.all([fetchCards(), fetchBills()]).finally(() => setLoading(false));
   }, []);
 
   const fetchCards = async () => {
+    // setCards([]);
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/cards/");
+      const response = await fetch(`${API_URL}/cards/`);
       const data = await response.json();
       setCards(data);
     } catch (err) {
@@ -114,53 +122,77 @@ function App() {
     }
   };
 
+  const fetchBills = async () => {
+    setBills([]);
+    // try {
+    //   const response = await fetch(`${API_URL}/bills/`);
+    //   const data = await response.json();
+    //   setBills(data);
+    // } catch (err) {
+    //   console.log(err);
+    // }
+  };
+
+  const handleBillCreated = (bill) => {
+    setBills((prev) => [...prev, bill]);
+    setShowAddBill(false);
+  };
+
+  const handleCardCreated = (card) => {
+    setCards((prev) => [...prev, card]);
+    setShowAddCard(false);
+  };
+
   return (
     <>
       <h1>Bill Tracker Website</h1>
-      {cards?.length > 0 ? (<h1>We have cards</h1>) : (<h1>Oops! We have no cards.</h1>)}
-      {/* <div>
-        <input
-          type="text" 
-          placeholder='Book Title...' 
-          onChange={(e) => setTitle(e.target.value)}
-          value={title}
-        />
-        <input
-          type="number" 
-          placeholder='Release Date...' 
-          onChange={(e) => setReleaseYear(e.target.value)}
-          value={releaseYear}
-        />
-        <button onClick={addBook}>Add Book</button>
-      </div> */}
 
-      {/* {books.map((book) => (
-        <div>
-          <p>Title: {book.title}</p>
-          <p>Release Year: {book.release_year}</p>
-          <input type="text" 
-            placeholder='New Title...'
-            onChange={(e) => setNewTitle(e.target.value)}
-          />
-          <button onClick={() => updateTitle(book.id, book.release_year)}>
-            Change Title
-          </button>
-          <button 
-            onClick={() => deleteBook(book.id)}> Delete</button>
+      {loading ? (
+        <p>Loading...</p>
+      ) : (
+        <div className="container">
+          {bills.length === 0 && (
+            <div className="alert alert-info d-flex justify-content-between align-items-center">
+              <span>You don't have any bills yet.</span>
+              <button className="btn btn-primary" onClick={() => setShowAddBill(true)}>Add bill</button>
+            </div>
+          )}
+
+          {cards.length === 0 && (
+            <div className="alert alert-info d-flex justify-content-between align-items-center">
+              <span>You have no cards on file.</span>
+              <button className="btn btn-primary" onClick={() => setShowAddCard(true)}>Add card</button>
+            </div>
+          )}
+
+          {bills.length > 0 && (
+            <div className="container-fluid bills-list card">
+              <div className="list-group">
+                <h3>Unassigned Bills</h3>
+                {[...bills]
+                  .sort((a, b) => a.company.localeCompare(b.company))
+                  .map((bill) => (
+                    <a key={bill.id} href="#" className="list-group-item list-group-item-action text-align-left">{bill.company}</a>
+                  ))}
+              </div>
+            </div>
+          )}
         </div>
-      ))} */}
-      <div className="container">
-      {/* <div className="container-fluid"> */}
-        <div className="row g-3">
-          {cards.map((card) => (
-            <Card 
-              key={card.id}
-              title={card.last_four}
-              body={card.owner}
-            />
-          ))}
-        </div>
-      </div>
+      )}
+
+      {showAddBill && (
+        <AddBillModal
+          cards={cards}
+          onClose={() => setShowAddBill(false)}
+          onCreated={handleBillCreated}
+        />
+      )}
+      {showAddCard && (
+        <AddCardModal
+          onClose={() => setShowAddCard(false)}
+          onCreated={handleCardCreated}
+        />
+      )}
     </>
   )
 }

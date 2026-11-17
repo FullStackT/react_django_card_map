@@ -20,7 +20,7 @@ def create_bill(request):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-@api_view(['PUT', 'DELETE'])
+@api_view(['GET', 'PUT', 'DELETE'])
 def bill_detail(request, pk):
     try:
         bill = Bill.objects.get(pk=pk)
@@ -40,6 +40,10 @@ def bill_detail(request, pk):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    elif request.method == 'GET':
+        serializer = BillSerializer(bill)
+        return Response(serializer.data)
 
 # Books
 @api_view(['GET'])

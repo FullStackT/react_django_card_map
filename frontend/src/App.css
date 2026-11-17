@@ -221,3 +221,11 @@ h1 {
 .list-group-item {
   width: 100%;
 }
+
+.bills-list {
+  background-color: lightgray;
+}
+
+.container {
+  padding: 5px 5px;
+}
